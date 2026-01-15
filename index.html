@@ -1,107 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VocalReplay Interactive Overlay</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --lofi-purple: #9d8df1;
-            --lofi-pink: #f1c0e8;
-            --lofi-bg: rgba(28, 25, 46, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.2);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VocalReplay Interactive Overlay</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --lofi-purple: #9d8df1;
+        --lofi-pink: #f1c0e8;
+        --lofi-bg: rgba(28, 25, 46, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background: transparent;
-            font-family: 'Quicksand', sans-serif;
-        }
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: transparent;
+        font-family: 'Quicksand', sans-serif;
+    }
 
-        /* The Main Widget */
-        .subscribe-widget {
-            position: absolute;
-            bottom: 50px;
-            left: -600px; /* Hidden off-screen initially */
-            display: flex;
-            align-items: center;
-            background: var(--lofi-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            padding: 18px 35px;
-            border-radius: 100px;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
-            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0;
-            min-width: 350px;
-        }
+    /* ---------------- Subscribe Widget ---------------- */
+    .subscribe-widget {
+        position: absolute;
+        bottom: 50px;
+        left: -600px; /* Hidden off-screen initially */
+        display: flex;
+        align-items: center;
+        background: var(--lofi-bg);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid var(--glass-border);
+        padding: 18px 35px;
+        border-radius: 100px;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+        transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        opacity: 0;
+        min-width: 350px;
+        z-index: 999; /* above alerts if needed */
+    }
 
-        .subscribe-widget.show {
-            left: 50px;
-            opacity: 1;
-        }
+    .subscribe-widget.show {
+        left: 50px;
+        opacity: 1;
+    }
 
-        /* Profile/Logo Image */
-        .logo-container {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid var(--lofi-pink);
-            margin-right: 20px;
-            flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(241, 192, 232, 0.3);
-        }
+    .logo-container {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid var(--lofi-pink);
+        margin-right: 20px;
+        flex-shrink: 0;
+        box-shadow: 0 0 15px rgba(241, 192, 232, 0.3);
+    }
 
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .logo-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-        /* Text Styles */
-        .text-content {
-            display: flex;
-            flex-direction: column;
-        }
+    .text-content {
+        display: flex;
+        flex-direction: column;
+    }
 
-        #engagement-msg {
-            color: var(--lofi-pink);
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 2px;
-            letter-spacing: 0.5px;
-        }
+    #engagement-msg {
+        color: var(--lofi-pink);
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 2px;
+        letter-spacing: 0.5px;
+    }
 
-        .channel-handle {
-            color: white;
-            font-size: 15px;
-            opacity: 0.8;
-            font-weight: 500;
-        }
+    .channel-handle {
+        color: white;
+        font-size: 15px;
+        opacity: 0.8;
+        font-weight: 500;
+    }
 
-        .handle-highlight {
-            color: var(--lofi-purple);
-            text-shadow: 0 0 10px rgba(157, 141, 241, 0.5);
-        }
+    .handle-highlight {
+        color: var(--lofi-purple);
+        text-shadow: 0 0 10px rgba(157, 141, 241, 0.5);
+    }
 
-        /* Subtle floating effect */
-        .floating {
-            animation: float 5s ease-in-out infinite;
-        }
+    .floating {
+        animation: float 5s ease-in-out infinite;
+    }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-    </style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
+    /* ---------------- Alert Overlay ---------------- */
+    .alert-overlay {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 400px;   /* Adjust frame size */
+        height: 120px;  /* Adjust frame size */
+        border: 2px solid var(--lofi-pink);
+        border-radius: 15px;
+        overflow: hidden;
+        z-index: 1000;
+        pointer-events: none; /* Allow clicks to pass through */
+        background: rgba(0, 0, 0, 0.2); /* Slight transparent background */
+        box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+    }
+
+    .chat-box {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        width: 350px;
+        height: 500px;
+        border: 2px solid var(--lofi-purple);
+        border-radius: 15px;
+        overflow: hidden;
+        background: rgba(0,0,0,0.3);
+        z-index: 900;
+    }
+</style>
 </head>
 <body>
 
+    <!-- Subscribe/Floating Widget -->
     <div id="widget" class="subscribe-widget">
         <div class="logo-container">
             <img src="logo.jpg" alt="VocalReplay">
@@ -112,11 +140,24 @@
         </div>
     </div>
 
+    <!-- Alert Overlay (Top Right) -->
+    <iframe 
+        class="alert-overlay" 
+        src="https://streamlabs.com/alert-box/v3/D2CBC5B0695F95721C6C4BEF8924AFA0C42DB7C0C703AD60DBDDD134AB1D66B262D5A1D064ED5A9D7B23E15A9F69229D34FC9993E66C6130A16FBC9E2183B518774F1F29C48D4F742FF21570DE9C2943D0F26417A5D06A97FD1AB04425E319D3AC3A0DE91E3025F326AE7BE7737CF68AD4D2EE0945B536C7242C292D19" 
+        frameborder="0">
+    </iframe>
+
+    <!-- Chat Box (Bottom Left) -->
+    <iframe 
+        class="chat-box"
+        src="https://streamlabs.com/widgets/chat-box/v1/D2CBC5B0695F95721C6C4BEF8924AFA0C42DB7C0C703AD60DBDDD134AB1D66B262D5A1D064ED5A9D7B23E15A9F69229D34FC9993E66C6130A16FBC9E2183B518774F1F29C48D4F742FF21570DE9C2943D0F26417A5D06A97FD1AB04425E319D3AC3A0DE91E3025F326AE7BE7737CF68AD4D2EE0945B536C7242C292D19"
+        frameborder="0">
+    </iframe>
+
     <script>
         const widget = document.getElementById('widget');
         const textElement = document.getElementById('engagement-msg');
 
-        // 20 Engagement Messages
         const messages = [
             "Are you guys enjoying the vibes?",
             "Studying, working, or just chilling?",
@@ -141,37 +182,25 @@
         ];
 
         let messageIndex = 0;
-
-        // TIMING (Milliseconds)
-        const SHOW_TIME = 20000;    // Visible for 20 seconds
-        const GAP_TIME = 720000;    // Gap of 12 minutes (adjust as needed)
+        const SHOW_TIME = 20000;
+        const GAP_TIME = 720000;
 
         function triggerOverlay() {
-            // 1. Pick the next message
             textElement.innerText = messages[messageIndex];
-            
-            // 2. Slide it in
             widget.classList.add('show');
             widget.classList.add('floating');
-
-            // 3. Increment index for next time
             messageIndex = (messageIndex + 1) % messages.length;
-
-            // 4. Hide it after SHOW_TIME
             setTimeout(() => {
                 widget.classList.remove('show');
-                // Remove float after exit to save CPU
                 setTimeout(() => widget.classList.remove('floating'), 1000);
             }, SHOW_TIME);
         }
 
-        // Start the loop
         function startLoop() {
             triggerOverlay();
             setInterval(triggerOverlay, SHOW_TIME + GAP_TIME);
         }
 
-        // Wait 10 seconds after stream starts before first appearance
         setTimeout(startLoop, 10000);
     </script>
 </body>
