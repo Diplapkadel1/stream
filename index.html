@@ -1,61 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VOCALREPLAY Live Chat</title>
-<style>
-    body {
-        margin: 0;
-        background: #121212;
-        font-family: Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #fff;
-    }
-    header {
-        width: 100%;
-        background: #1f1f1f;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 0;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-    header img {
-        height: 60px;
-        margin-right: 15px;
-    }
-    header h1 {
-        font-size: 24px;
-        margin: 0;
-    }
-    .chat-container {
-        margin-top: 20px;
-        width: 95%;
-        max-width: 900px;
-        height: 700px;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        border: 2px solid #333;
-    }
-    iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocalReplay Interactive Overlay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --lofi-purple: #9d8df1;
+            --lofi-pink: #f1c0e8;
+            --lofi-bg: rgba(28, 25, 46, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        /* The Main Widget */
+        .subscribe-widget {
+            position: absolute;
+            bottom: 50px;
+            left: -600px; /* Hidden off-screen initially */
+            display: flex;
+            align-items: center;
+            background: var(--lofi-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 18px 35px;
+            border-radius: 100px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            min-width: 350px;
+        }
+
+        .subscribe-widget.show {
+            left: 50px;
+            opacity: 1;
+        }
+
+        /* Profile/Logo Image */
+        .logo-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--lofi-pink);
+            margin-right: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(241, 192, 232, 0.3);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Text Styles */
+        .text-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #engagement-msg {
+            color: var(--lofi-pink);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        .channel-handle {
+            color: white;
+            font-size: 15px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .handle-highlight {
+            color: var(--lofi-purple);
+            text-shadow: 0 0 10px rgba(157, 141, 241, 0.5);
+        }
+
+        /* Subtle floating effect */
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <img src="logo.png" alt="VOCALREPLAY Logo">
-        <h1>VOCALREPLAY Lofi Live Chat</h1>
-    </header>
 
-    <div class="chat-container">
-        <iframe src="https://www.youtube.com/live_chat?is_popout=1&v=G0Tz_TzxsLc" allowfullscreen></iframe>
+    <div id="widget" class="subscribe-widget">
+        <div class="logo-container">
+            <img src="logo.jpg" alt="VocalReplay">
+        </div>
+        <div class="text-content">
+            <div id="engagement-msg">Are you guys enjoying?</div>
+            <div class="channel-handle">youtube.com/<span class="handle-highlight">@VocalReplay</span></div>
+        </div>
     </div>
+
+    <script>
+        const widget = document.getElementById('widget');
+        const textElement = document.getElementById('engagement-msg');
+
+        // 20 Engagement Messages
+        const messages = [
+            "Are you guys enjoying the vibes?",
+            "Studying, working, or just chilling?",
+            "Where are you listening from today?",
+            "What's your current mood in one emoji? ☁️",
+            "Liking the music? Hit subscribe! ✨",
+            "Comment your favorite track so far.",
+            "Tea or Coffee while listening? ☕",
+            "How's your day going, lovely people?",
+            "Is this helping you focus or relax?",
+            "Drop a 💜 in the chat if you're here!",
+            "First time here? Welcome to the family!",
+            "What's the weather like where you are? 🌧️",
+            "Any song requests for the next mix?",
+            "Don't forget to like for more lofi! 👍",
+            "What's one thing you're grateful for today?",
+            "Rainy days or sunny afternoons? ☀️",
+            "Stay hydrated and keep vibing! 💧",
+            "Your support means the world to us.",
+            "Which lofi animal are you today? 🐱",
+            "Let's reach our sub goal together! 🚀"
+        ];
+
+        let messageIndex = 0;
+
+        // TIMING (Milliseconds)
+        const SHOW_TIME = 20000;    // Visible for 20 seconds
+        const GAP_TIME = 720000;    // Gap of 12 minutes (adjust as needed)
+
+        function triggerOverlay() {
+            // 1. Pick the next message
+            textElement.innerText = messages[messageIndex];
+            
+            // 2. Slide it in
+            widget.classList.add('show');
+            widget.classList.add('floating');
+
+            // 3. Increment index for next time
+            messageIndex = (messageIndex + 1) % messages.length;
+
+            // 4. Hide it after SHOW_TIME
+            setTimeout(() => {
+                widget.classList.remove('show');
+                // Remove float after exit to save CPU
+                setTimeout(() => widget.classList.remove('floating'), 1000);
+            }, SHOW_TIME);
+        }
+
+        // Start the loop
+        function startLoop() {
+            triggerOverlay();
+            setInterval(triggerOverlay, SHOW_TIME + GAP_TIME);
+        }
+
+        // Wait 10 seconds after stream starts before first appearance
+        setTimeout(startLoop, 10000);
+    </script>
 </body>
 </html>
